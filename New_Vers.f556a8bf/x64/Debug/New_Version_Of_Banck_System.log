@@ -1,5 +1,0 @@
-﻿  New_Version_Of_Banck_System.cpp
-C:\Users\Intel\Desktop\New_Version_Of_Banck_System\New_Version_Of_Banck_System.cpp(55,21): warning C4267: '=': conversion from 'size_t' to 'short', possible loss of data
-C:\Users\Intel\Desktop\New_Version_Of_Banck_System\New_Version_Of_Banck_System.cpp(144,27): warning C4267: 'argument': conversion from 'size_t' to 'short', possible loss of data
-C:\Users\Intel\Desktop\New_Version_Of_Banck_System\New_Version_Of_Banck_System.cpp(304,1): warning C4715: 'DeleteClients': not all control paths return a value
-  New_Version_Of_Banck_System.vcxproj -> C:\Users\Intel\Desktop\New_Version_Of_Banck_System\x64\Debug\New_Version_Of_Banck_System.exe
