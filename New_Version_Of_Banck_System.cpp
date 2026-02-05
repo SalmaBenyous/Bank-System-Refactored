@@ -5,6 +5,8 @@
 #include <vector>
 #include<fstream>
 #include <iomanip>
+#include <cstdlib> // Required header for exit()
+
 using namespace std;
 
 //string ClientList = "ClientsList.txt";
@@ -139,6 +141,7 @@ void ShowCllient(sClients Client)
 }
 void ShowClientsList(vector <sClients> &Clients)
 {
+	system("cls");
 	if (Clients.size() > 0)
 	{
 		HeaderTable(Clients.size());
@@ -204,6 +207,8 @@ bool isAccountExist(string AccountNumber, vector <sClients>& Clients,sClients &C
 }
 sClients AddNewClient(vector <sClients>& Clients)
 {
+	system("cls");
+	HeaderOfOperation("Adding New CLient..");
 	sClients C;
 	C= ReadClient(Clients);
 	return C;
@@ -211,6 +216,7 @@ sClients AddNewClient(vector <sClients>& Clients)
 }
 void HeaderOfOperation(string Message)
 {
+	system("cls");
 	cout << "\n##################################################\n";
 	cout << "\t\t" << Message << endl;
 	cout << "##################################################\n\n";
@@ -302,30 +308,95 @@ bool DeleteClients(vector <sClients> &Clients)
 	}
 	
 }
+
+void UpdateClientByAccountNumber(string AccountNumber,vector <sClients> &Clients)
+{
+	for (auto it = Clients.begin(); it != Clients.end(); it++)
+	{
+		if (it->AccountNumber == AccountNumber)
+		{
+			cout << "Enter the new Full Name:";
+			getline(cin >> ws, it->FullName);
+			cout << "Enter the new Phone Number:";
+			getline(cin, it->PhoneNumber);
+			cout << "Enter the new Balance Accoount:";
+			cin >> it->AccountBalance;
+			return;
+		}
+	}
+}
+bool UpdateClients(vector <sClients>& Clients)
+{
+	HeaderOfOperation("Updating Client...");
+	sClients Client;
+	string AccountNumber = ReadAccountNumber();
+	char AnswerForUpdate = 'N';
+	if (FindClientByAccountNumber(AccountNumber, Clients, Client))
+	{
+		cout << "Are you sure you want to update this Client? Y/N";
+		cin >> AnswerForUpdate;
+		if (toupper(AnswerForUpdate) == 'Y')
+		{
+			//ClientCard(Client);
+			UpdateClientByAccountNumber(AccountNumber, Clients);
+			cout << "Updated Client Succssesfully!";
+			//refresh data
+			SavaDataToFile(Clients);
+			return true;
+		}
+		
+	}
+	else
+	{
+		cout << "This Account Number [" << AccountNumber << "] is not exist :-)\n";
+		return false;
+	}
+}
+void FindClients(vector <sClients> &Clients)
+{
+	HeaderOfOperation("Finding  a Client...");
+	sClients Client;
+	FindClientByAccountNumber(ReadAccountNumber(), Clients,Client);
+	return;
+}
+void Exit()
+{
+	HeaderOfOperation("Ending Programm...");
+	cout << "Programm end :)\n\n";
+	exit(0);
+}
 void HandleMenuChoice(enOperations Choose, vector <sClients> &Clients)
 {
 	switch (Choose)
 	{
 	case AddClient:
-		system("cls");
+		//system("cls");
 		AddClientsToFile(Clients);
 		GoBackToProgramm(Clients);
 		break;
 	case ShowClients:
-		system("cls");
+		//system("cls");
 		ShowClientsList(Clients);
 		GoBackToProgramm(Clients);
 		break;
 	case DeleteClient:
-		system("cls");
+		//system("cls");
 		DeleteClients(Clients);
 		GoBackToProgramm(Clients);
 		break;
 	case UpdateCleint:
+		//system("cls");
+		UpdateClients(Clients);
+		GoBackToProgramm(Clients);
 		break;
 	case FindClient:
+		//system("cls");
+		FindClients(Clients);
+		GoBackToProgramm(Clients);
 		break;
 	case ExitProgramm:
+		//system("cls");
+		Exit();
 		break;
 	default:
 		break;
