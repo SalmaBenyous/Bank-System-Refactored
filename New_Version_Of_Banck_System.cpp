@@ -11,8 +11,9 @@ using namespace std;
 
 //string ClientList = "ClientsList.txt";
 
-enum enOperations{ShowClients =1,AddClient=2,DeleteClient=3,UpdateCleint=4,FindClient=5,ExitProgramm=6};
+enum enOperations{ShowClients =1,AddClient=2,DeleteClient=3,UpdateCleint=4,FindClient=5,Transaction=6,ExitProgramm=7};
 
+enum enTransactions{Deposit=1,Withdraw=2,BalancesTotal=3,MainMenue=4};
 struct sClients
 {
 	string AccountNumber;
@@ -30,21 +31,22 @@ void HeaderOfOperation(string Message);
 void ShowMenuScreen()
 {
 	cout << "=========================================\n";
-	cout << "\t\tMain Menu Screen\n";
+	cout << "\t\tMain Menue Screen\n";
 	cout << "=========================================\n";
 	cout << "\t[1] Show Clients List.\n";
 	cout << "\t[2] Add New Client.\n";
 	cout << "\t[3] Delete Client.\n";
 	cout << "\t[4] Update Client Info.\n";
 	cout << "\t[5] Find Client.\n";
-	cout << "\t[6] Exit.\n";
+	cout << "\t[6] Transactions.\n";
+	cout << "\t[7] Exit.\n";
 	cout << "=========================================\n";
 
 }
 enOperations ReadOperation()
 {
 	short Choose = 0;
-	cout << "Choose what do you want to do? [1 to 6]? ";
+	cout << "Choose what do you want to do? [1 to 7]? ";
 	cin >> Choose;
 	return (enOperations)Choose;
 
@@ -365,7 +367,93 @@ void Exit()
 	cout << "Programm end :)\n\n";
 	exit(0);
 }
-void HandleMenuChoice(enOperations Choose, vector <sClients> &Clients)
+// extension
+void TransactionMenuScreen()
+{
+	cout << "=========================================\n";
+	cout << "\t\tTransaction Menue Screen\n";
+	cout << "=========================================\n";
+	cout << "\t[1] Deposit.\n";
+	cout << "\t[2] Withdraw.\n";
+	cout << "\t[3] Total Balances.\n";
+	cout << "\t[4] Main Menue\n";
+	cout << "=========================================\n";
+}
+enTransactions ReadTrosaction()
+{
+	short transaction = 0;
+	cout << "Choose what do you want to do? [1 to 4]";
+	cin >> transaction;
+	return (enTransactions)transaction;
+}
+
+void DepositToClient(string AccountNumber, vector <sClients> &Clients, int DepositAmount)
+{
+	for (sClients& C : Clients)
+	{
+		if (C.AccountNumber == AccountNumber)
+		{
+			C.AccountBalance = C.AccountBalance + DepositAmount;
+			return;
+		}
+	}
+}
+bool DepositToClients(vector <sClients> &Clients)
+{
+
+	HeaderOfOperation("Deposit Screen");
+	sClients Client;
+	int DepoistAmount = 0;
+	char AnswerFoDeposit = 'N';
+	string AccountNumber = ReadAccountNumber();
+	if (FindClientByAccountNumber(AccountNumber, Clients, Client))
+	{
+		cout << "Please enter deposit amount?";
+		cin >> DepoistAmount;
+		cout << "Are you sure you want perform this transaction? Y/N";
+		cin >> AnswerFoDeposit;
+		if (toupper(AnswerFoDeposit) == 'Y')
+		{
+			DepositToClient(AccountNumber, Clients, DepoistAmount);
+			cout << "Done, Updated Balance Successfully!\n";
+			SavaDataToFile(Clients);
+			return true;
+		}
+	}
+	else
+	{
+		cout << "This Account Number [" << AccountNumber << "] is not exist :-)\n";
+		return false;
+	}
+	
+}
+void HandelMenueTrasactions(enTransactions transaction, vector <sClients>& Clients)
+{
+	switch (transaction)
+	{
+	case Deposit:
+		DepositToClients(Clients);
+		break;
+	case Withdraw:
+		break;
+	case BalancesTotal:
+		break;
+	case MainMenue:
+		break;
+	default:
+		break;
+	}
+}
+
+void Transactions(vector <sClients> &Clients)
+{
+	system("cls");
+	TransactionMenuScreen();
+	HandelMenueTrasactions(ReadTrosaction(), Clients);
+}
+
+
+void HandleMenueChoice(enOperations Choose, vector <sClients> &Clients)
 {
 	switch (Choose)
 	{
@@ -398,6 +486,9 @@ void HandleMenuChoice(enOperations Choose, vector <sClients> &Clients)
 		//system("cls");
 		Exit();
 		break;
+	case Transaction:
+		Transactions(Clients);
+		break;
 	default:
 		break;
 	}
@@ -410,7 +501,7 @@ void StartProgramm(vector <sClients>& Clients)
 	system("cls");
 	ShowMenuScreen();
 	//ReadOperation();
-	HandleMenuChoice(ReadOperation(), Clients);
+	HandleMenueChoice(ReadOperation(), Clients);
 }
 
 
