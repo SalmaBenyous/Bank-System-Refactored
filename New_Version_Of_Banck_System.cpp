@@ -27,6 +27,8 @@ bool isAccountExist(string AccountNumber, vector <sClients> &Clients,sClients &C
 void StartProgramm(vector <sClients>& Clients);
 void ClientCard(sClients& Client);
 void HeaderOfOperation(string Message);
+void HandelMenueTrasactions(enTransactions transaction, vector <sClients>& Clients);
+void  FooterTablaBalances(double TotaleBalances);
 
 void ShowMenuScreen()
 {
@@ -368,10 +370,10 @@ void Exit()
 	exit(0);
 }
 // extension
-void TransactionMenuScreen()
+void TransactionMenuScreen(vector <sClients> Clients)
 {
 	cout << "=========================================\n";
-	cout << "\t\tTransaction Menue Screen\n";
+	cout << "\tTransaction Menue Screen\n";
 	cout << "=========================================\n";
 	cout << "\t[1] Deposit.\n";
 	cout << "\t[2] Withdraw.\n";
@@ -382,7 +384,7 @@ void TransactionMenuScreen()
 enTransactions ReadTrosaction()
 {
 	short transaction = 0;
-	cout << "Choose what do you want to do? [1 to 4]";
+	cout << "Choose what do you want to do? [1 to 4]?";
 	cin >> transaction;
 	return (enTransactions)transaction;
 }
@@ -394,6 +396,8 @@ void DepositToClient(string AccountNumber, vector <sClients> &Clients, int Depos
 		if (C.AccountNumber == AccountNumber)
 		{
 			C.AccountBalance = C.AccountBalance + DepositAmount;
+			cout << "Done, Updated Balance Successfully!\n";
+			cout << "New Balance is " << C.AccountBalance << endl;
 			return;
 		}
 	}
@@ -415,7 +419,7 @@ bool DepositToClients(vector <sClients> &Clients)
 		if (toupper(AnswerFoDeposit) == 'Y')
 		{
 			DepositToClient(AccountNumber, Clients, DepoistAmount);
-			cout << "Done, Updated Balance Successfully!\n";
+			
 			SavaDataToFile(Clients);
 			return true;
 		}
@@ -427,16 +431,67 @@ bool DepositToClients(vector <sClients> &Clients)
 	}
 	
 }
+void Transactions(vector <sClients>& Clients)
+{
+	system("cls");
+	TransactionMenuScreen(Clients);
+	HandelMenueTrasactions(ReadTrosaction(), Clients);
+}
+void GoBackToTransactions(vector <sClients>& Clients)
+{
+	system("pause");
+	Transactions(Clients);
+}
+
+void HeaderTableBalances(short size)
+{
+	cout << "\t\t\tBalances List (" << size << ") Client(s)." << endl;
+	cout << "-----------------------------------------------------------------------------\n";
+	cout << left << setw(20) << "| Account Number";
+	cout << left << setw(25) << "| Client Name";
+	cout << left << setw(15) << "| Balance";
+	cout << "\n-----------------------------------------------------------------------------\n";
+}
+void BodyTableBalances(vector <sClients>& Clients)
+{
+	double TotaleBalances = 0;
+	for (sClients& C : Clients)
+	{
+		cout << left << setw(20) << "| " + C.AccountNumber; // Account Number
+		cout << left << setw(25) << "| " + C.FullName; // Name
+		cout << left << setw(15) << "| " + to_string(C.AccountBalance); // Balance
+		cout << "\n-----------------------------------------------------------------------------\n";
+		TotaleBalances += C.AccountBalance;
+	}
+	FooterTablaBalances(TotaleBalances);
+
+}
+void FooterTablaBalances(double TotaleBalances)
+{
+	//cout << "\n-----------------------------------------------------------------------------\n";
+	cout << "\t\t\ Total Balances = " << TotaleBalances << endl;
+}
+void TotalBalances(vector <sClients>& Clients)
+{
+	system("cls");
+	HeaderTableBalances(Clients.size());
+	BodyTableBalances(Clients);
+
+
+}
 void HandelMenueTrasactions(enTransactions transaction, vector <sClients>& Clients)
 {
 	switch (transaction)
 	{
 	case Deposit:
 		DepositToClients(Clients);
+		GoBackToTransactions(Clients);
 		break;
 	case Withdraw:
 		break;
 	case BalancesTotal:
+		TotalBalances(Clients);
+		GoBackToTransactions(Clients);
 		break;
 	case MainMenue:
 		break;
@@ -445,12 +500,6 @@ void HandelMenueTrasactions(enTransactions transaction, vector <sClients>& Clien
 	}
 }
 
-void Transactions(vector <sClients> &Clients)
-{
-	system("cls");
-	TransactionMenuScreen();
-	HandelMenueTrasactions(ReadTrosaction(), Clients);
-}
 
 
 void HandleMenueChoice(enOperations Choose, vector <sClients> &Clients)
