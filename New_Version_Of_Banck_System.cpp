@@ -431,6 +431,58 @@ bool DepositToClients(vector <sClients> &Clients)
 	}
 	
 }
+void WithdrawToClient(string AccountNumber, vector <sClients>& Clients)
+{
+	char AnswerFoWithDraw = 'N';
+	int WithDrawAmount = 0;
+	cout << "Please enter withdraw amount?";
+	cin >> WithDrawAmount;
+	for (sClients& C : Clients)
+	{
+		if (C.AccountNumber == AccountNumber)
+		{
+		  while (C.AccountBalance < WithDrawAmount)
+		{
+			  cout << "Amount Exceeds the Balance, you can withdraw up: " << C.AccountBalance << endl;
+			  cout << "Please Enter another amount\n";
+			  cin >> WithDrawAmount;
+				
+		}
+		 cout << "Are you sure you want perform this transaction? Y/N";
+		 cin >> AnswerFoWithDraw;
+		if (toupper(AnswerFoWithDraw) == 'Y')
+		  {
+			 
+			  C.AccountBalance = C.AccountBalance - WithDrawAmount;
+			  cout << "Done, Updated Balance Successfully!\n";
+			  cout << "New Balance is " << C.AccountBalance << endl;
+			 
+		}
+		return;
+			
+		}
+	}
+}
+bool WithdrawToCliens(vector <sClients>& Clients)
+{
+	HeaderOfOperation("Withdraw Screen");
+	sClients Client;
+
+	string AccountNumber = ReadAccountNumber();
+	if (FindClientByAccountNumber(AccountNumber, Clients, Client))
+	{
+
+		
+		WithdrawToClient(AccountNumber, Clients);
+		SavaDataToFile(Clients);
+		return true;
+	}
+	else
+	{
+		cout << "This Account Number [" << AccountNumber << "] is not exist :-)\n";
+		return false;
+	}
+}
 void Transactions(vector <sClients>& Clients)
 {
 	system("cls");
@@ -488,6 +540,8 @@ void HandelMenueTrasactions(enTransactions transaction, vector <sClients>& Clien
 		GoBackToTransactions(Clients);
 		break;
 	case Withdraw:
+		WithdrawToCliens(Clients);
+		GoBackToTransactions(Clients);
 		break;
 	case BalancesTotal:
 		TotalBalances(Clients);
