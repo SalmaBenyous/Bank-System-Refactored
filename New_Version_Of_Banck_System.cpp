@@ -265,10 +265,10 @@ void GoBackToProgramm(vector <sClients>& Clients)
 	system("pause");
 	StartProgramm(Clients);
 }
-string ReadAccountNumber()
+string ReadAccountNumber(string Message)
 {
     string AccountNumber;
-	cout << "Please Enter an Account Number:";
+	cout << Message << " :";
 	cin >> AccountNumber;
 	return AccountNumber;
 
@@ -293,7 +293,7 @@ bool DeleteClients(vector <sClients> &Clients)
 {
 	sClients Client;
 	HeaderOfOperation("Deleting Client...");
-	string AccountNumber = ReadAccountNumber();
+	string AccountNumber = ReadAccountNumber("Please enter the Account Number");
 	char AnswerForDelete='N';
 	if(FindClientByAccountNumber(AccountNumber,Clients,Client))
 	{
@@ -333,7 +333,7 @@ bool UpdateClients(vector <sClients>& Clients)
 {
 	HeaderOfOperation("Updating Client...");
 	sClients Client;
-	string AccountNumber = ReadAccountNumber();
+	string AccountNumber = ReadAccountNumber("Please enter the Account Number");
 	char AnswerForUpdate = 'N';
 	if (FindClientByAccountNumber(AccountNumber, Clients, Client))
 	{
@@ -360,7 +360,7 @@ void FindClients(vector <sClients> &Clients)
 {
 	HeaderOfOperation("Finding  a Client...");
 	sClients Client;
-	FindClientByAccountNumber(ReadAccountNumber(), Clients,Client);
+	FindClientByAccountNumber(ReadAccountNumber("Please enter the Account Number"), Clients, Client);
 	return;
 }
 void Exit()
@@ -409,26 +409,23 @@ bool DepositToClients(vector <sClients> &Clients)
 	sClients Client;
 	int DepoistAmount = 0;
 	char AnswerFoDeposit = 'N';
-	string AccountNumber = ReadAccountNumber();
-	if (FindClientByAccountNumber(AccountNumber, Clients, Client))
+	string AccountNumber = ReadAccountNumber("Please enter the Account Number");
+	while (!FindClientByAccountNumber(AccountNumber, Clients, Client))
 	{
-		cout << "Please enter deposit amount?";
+		AccountNumber = ReadAccountNumber("Please enter the correct  Account Number");
+	}
+	
+	    cout << "Please enter deposit amount?";
 		cin >> DepoistAmount;
 		cout << "Are you sure you want perform this transaction? Y/N";
 		cin >> AnswerFoDeposit;
 		if (toupper(AnswerFoDeposit) == 'Y')
 		{
 			DepositToClient(AccountNumber, Clients, DepoistAmount);
-			
+
 			SavaDataToFile(Clients);
 			return true;
 		}
-	}
-	else
-	{
-		cout << "This Account Number [" << AccountNumber << "] is not exist :-)\n";
-		return false;
-	}
 	
 }
 void WithdrawToClient(string AccountNumber, vector <sClients>& Clients)
@@ -468,7 +465,7 @@ bool WithdrawToCliens(vector <sClients>& Clients)
 	HeaderOfOperation("Withdraw Screen");
 	sClients Client;
 
-	string AccountNumber = ReadAccountNumber();
+	string AccountNumber = ReadAccountNumber("Please enter the Account Number");
 	if (FindClientByAccountNumber(AccountNumber, Clients, Client))
 	{
 
@@ -548,6 +545,7 @@ void HandelMenueTrasactions(enTransactions transaction, vector <sClients>& Clien
 		GoBackToTransactions(Clients);
 		break;
 	case MainMenue:
+		StartProgramm(Clients);
 		break;
 	default:
 		break;
